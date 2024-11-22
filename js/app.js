@@ -3,43 +3,66 @@ const computer = document.getElementById('computer');
 const timer = document.getElementById('timer');
 const startButton = document.getElementById('start-button');
 
-let playerSpeed = 0;
-let computerSpeed = 2; // Adjust computer speed as needed
+let playerSpeed = 0; // Start with zero speed
+const computerSpeed = 1; // Adjust computer speed as needed
 let startTime;
-let elapsedTime = 0;
+let animationFrameId;
+
+const gameHeight = window.innerHeight - player.offsetHeight; // Calculate game height
+
+function movePlayer() {
+  const currentTop = parseFloat(player.style.top) || 0;
+  player.style.top = `${Math.min(currentTop + playerSpeed, gameHeight)}px`;
+}
+
+function moveComputer() {
+  const currentTop = parseFloat(computer.style.top) || 0;
+  const newTop = Math.min(currentTop + computerSpeed, gameHeight);
+  computer.style.top = `${newTop}px`;
+}
 
 function startGame() {
   startTime = Date.now();
   startButton.disabled = true;
+  playerSpeed = 0; // Reset player speed at the start of the game
+  resetGame();
 
-  const gameInterval = setInterval(() => {
+  function updateGame() {
     const currentTime = Date.now();
-    elapsedTime = (currentTime - startTime) / 1000;
+    const elapsedTime = (currentTime - startTime) / 1000;
     timer.textContent = elapsedTime.toFixed(2);
 
-    player.style.left = `${playerSpeed * elapsedTime}px`;
-    computer.style.left = `${computerSpeed * elapsedTime}px`;
+    moveComputer();
+    movePlayer(); // Ensure player moves based on current speed
 
-    if (player.offsetLeft >= window.innerWidth - player.offsetWidth ||
-        computer.offsetLeft >= window.innerWidth - computer.offsetWidth) {
-      clearInterval(gameInterval);
-      const winner = player.offsetLeft > computer.offsetLeft ? 'You' : 'Computer';
+    const playerReachedEnd = player.offsetTop >= gameHeight;
+    const computerReachedEnd = computer.offsetTop >= gameHeight;
+
+    if (playerReachedEnd || computerReachedEnd) {
+      cancelAnimationFrame(animationFrameId);
+      const winner = playerReachedEnd ? 'Player' : 'RoboBlock';
       alert(`${winner} wins!`);
       startButton.disabled = false;
+    } else {
+      animationFrameId = requestAnimationFrame(updateGame);
     }
-  }, 10);
+  }
 
-  document.addEventListener('keydown', (event) => {
-    if (event.key === ' ') {
-      playerSpeed += 0.5; // Adjust acceleration as needed
-    }
-  });
-
-  document.addEventListener('keyup', (event) => {
-    if (event.key === ' ') {
-      playerSpeed = 0;
-    }
-  });
+  animationFrameId = requestAnimationFrame(updateGame);
 }
 
-startButton.addEventListener('click', startGame);
+function resetGame() {
+  player.style.top = '0px';
+  computer.style.top = '0px';
+  timer.textContent = '0.00';
+}
+
+// Event listener for player control using the start button
+startButton.addEventListener('click', (event) => {
+  if (startButton.disabled) {
+    playerSpeed += 2; // Increase speed with each button press
+    movePlayer(); // Move player immediately on button press
+  } else {
+    startGame();
+  }
+});

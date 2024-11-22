@@ -2,35 +2,93 @@ body {
     background-color: black;
     color: white;
     text-align: center;
-  }
-  
-  #game-container {
+}
+
+#game-container {
     position: relative;
     width: 100%;
     height: 100vh;
-  }
-  
-  #player, #computer, #start-line, #finish-line {
+    display: flex; /* Enable flexbox layout */
+    justify-content: center; /* Center the items horizontally */
+    align-items: flex-start;
+}
+    #start-button {
+        position: absolute; /* Position the button absolutely within the container */
+        bottom: 80px; /* Position it 60px above the finish line */
+        left: 80%; /* Center it horizontally */
+        transform: translateX(-50%); /* Adjust for the button's width */
+        width: 150px; /* Keep the button wide enough for easy tapping */
+        height: 120px; /* Keep the button tall enough for easy tapping */
+        background-color: #3aa793; /* A visually appealing color */
+        color: white; /* Text color */
+        font-size: 24px; /* Larger font size for readability */
+        font-weight: bold; /* Corrected from font-style to font-weight */
+        border: none; /* Remove default border */
+        border-radius: 17px; /* Rounded corners for a modern look */
+        cursor: pointer; /* Change cursor to pointer on hover */
+        text-align: center; /* Center the text */
+        line-height: 50px; /* Vertically center the text */
+        transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+    }
+
+#start-button:hover {
+    background-color: #458ca0; /* Slightly darker shade on hover */
+}
+
+#start-button:active {
+    background-color: #3e8e85; /* Even darker shade when pressed */
+}
+
+#player, #computer {
+    width: 50px;
+    height: 50px;
+    background-color: rgb(251, 246, 246);
+    animation: blink 1s infinite alternate; /* Add blinking animation */
+    margin: 0 20px; 
+    position: relative;
+    top: 5px
+}
+/* Style for the start line */
+.start-line {
+    width: 100%;
+    height: 5px;
+    background-color: green; /* Example color */
     position: absolute;
-    width: 20px;
-    height: 20px;
-    background-color: white;
-  }
-  
-  #start-line {
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-  
-  #finish-line {
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-  
-  #timer {
+    top: 0; /* Position it at the top */
+    z-index: 10;
+}
+
+/* Style for the finish line */
+.finish-line {
+    width: 100%;
+    height: 5px;
+    background-color: red; /* Example color */
+    position: fixed;
+    bottom: 0; /* Position it at the bottom */
+    z-index: 10; 
+}
+
+/* Ensure no blinking effect */
+.start-line, .finish-line {
+    animation: none; /* Disable any animations */
+    transition: none; /* Disable any transitions */
+
+}
+
+#timer {
     position: absolute;
-    top: 10px;
-    right: 10px;
-  }
+    top: 20px;
+    right: 20px;
+    font-size: 40px;
+    font-family: 'Orbitron';
+}
+
+/* Blinking animation */
+@keyframes blink {
+    0% {
+        background-color: rgb(251, 246, 246);
+    }
+    100% {
+        background-color: black;
+    }
+}
